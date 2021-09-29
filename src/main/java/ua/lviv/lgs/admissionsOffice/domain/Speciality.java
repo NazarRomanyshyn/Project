@@ -3,14 +3,46 @@ package ua.lviv.lgs.admissionsOffice.domain;
 import java.io.Serializable;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
+@Entity
+@Table(name = "speciality")
 public class Speciality implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "speciality_id")
 	private Integer id;
+	@Column
+	@NotBlank(message = "Назва спеціальності не може бути пустим!")
 	private String title;
+	@Column
+	@NotNull(message = "План набора не може бути пустим!")
+	@Min(value = 1, message = "План набора не може бути нулем!")
 	private Integer enrollmentPlan;
+	@Column
 	private boolean recruitmentCompleted;
+
+	@ManyToOne
+	@JoinColumn(name = "faculty_id", nullable = false)
 	private Faculty faculty;
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "speciality")
+	@Column(nullable = false)
 	private Set<Application> applications;
 
 	

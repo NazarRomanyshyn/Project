@@ -4,13 +4,47 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.MapKeyColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+
+@Entity
+@Table(name = "faculty")
 public class Faculty implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "faculty_id")
 	private Integer id;
+	@Column
+	@NotBlank(message = "Назва факультету не може бути пустою!")
 	private String title;
+	
+	@ManyToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = "subject_faculty", joinColumns = @JoinColumn(name = "faculty_id"), inverseJoinColumns = @JoinColumn(name = "subject_id"))
 	private Set<Subject> examSubjects;
+	
+	@ElementCollection(fetch = FetchType.LAZY)
+	@CollectionTable(name = "subject_coeffs")
+	@MapKeyColumn(name = "subject_id")
 	private Map<Subject, Double> subjectCoeffs;
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "faculty")
+	@Column(nullable = false)
 	private Set<Speciality> specialities;
 
 	

@@ -4,18 +4,45 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.persistence.MapsId;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "applicant")
 public class Applicant implements Serializable, Comparable<Applicant> {
 	private static final long serialVersionUID = 1L;
 	
-
+	@Id
+	@Column
 	private Integer id;
+	@Column
 	private LocalDate birthDate;
+	@Column
 	private String city;
+	@Column
 	private String school;
+	@Column
 	private String fileName;
+	@Column
 	private String fileType;
+	@Column
+	@Lob
 	private byte[] fileData;
+	
+	@OneToOne
+    @MapsId
     private User user;
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "applicant")
+	@Column(nullable = false)
 	private Set<Application> applications;
 
 	

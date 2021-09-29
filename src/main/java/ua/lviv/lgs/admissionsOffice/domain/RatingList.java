@@ -2,18 +2,33 @@ package ua.lviv.lgs.admissionsOffice.domain;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.MapsId;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
+@Entity
+@Table(name = "rating_list")
 public class RatingList implements Serializable, Comparable<RatingList> {
 	private static final long serialVersionUID = 1L;
 
 	public static final double znoCoeff = 0.9;
 	public static final double attMarkCoeff = 0.1;
 
-
+	@Id
+	@Column
 	private Integer id;
+	@Column
 	private Double totalMark;
+	@Column
 	private boolean accepted;
+	@Column
 	private String rejectionMessage;
+
+	@OneToOne
+    @MapsId
     private Application application;
 
 	public RatingList() { }
