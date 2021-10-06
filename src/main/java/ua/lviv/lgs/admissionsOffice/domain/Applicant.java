@@ -15,7 +15,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "applicant")
-public class Applicant extends User {
+public class  Applicant extends User {
 	@Column
 	private LocalDate birthDate;
 	@Column

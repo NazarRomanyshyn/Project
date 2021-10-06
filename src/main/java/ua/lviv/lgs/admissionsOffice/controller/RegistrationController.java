@@ -14,7 +14,7 @@ import ua.lviv.lgs.admissionsOffice.service.UserService;
 @Controller
 public class RegistrationController {
 	@Autowired
-	private UserService userService;
+	private  UserService userService;
 
 	@GetMapping("/registration")
 	public String viewRegistrationForm() {

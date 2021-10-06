@@ -24,7 +24,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Entity
 @Table(name = "user")
 @Inheritance(strategy = InheritanceType.JOINED)
-public class User implements UserDetails {
+public class  User implements UserDetails {
 	private static final long serialVersionUID = 1L;
 	
 	@Id

@@ -6,7 +6,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "rating_list")
-public class RatingList extends Application {
+public class  RatingList extends Application {
 	@Column
 	private Double totalMark;
 	@Column

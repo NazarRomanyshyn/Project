@@ -22,7 +22,7 @@ import ua.lviv.lgs.admissionsOffice.domain.User;
 @Controller
 @RequestMapping("/user")
 @PreAuthorize("hasAuthority('ADMIN')")
-public class UserController {
+public class  UserController {
 	@Autowired
 	private UserRepository userRepository;
 

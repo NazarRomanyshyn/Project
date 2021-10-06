@@ -4,6 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import ua.lviv.lgs.admissionsOffice.domain.Applicant;
 
-public interface ApplicantRepository extends JpaRepository<Applicant, Integer>{
+public interface  ApplicantRepository extends JpaRepository<Applicant, Integer>{
 
 }

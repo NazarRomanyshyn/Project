@@ -15,7 +15,7 @@ import ua.lviv.lgs.admissionsOffice.domain.AccessLevel;
 import ua.lviv.lgs.admissionsOffice.domain.User;
 
 @Service
-public class UserService implements UserDetailsService {
+public class  UserService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
 	@Autowired

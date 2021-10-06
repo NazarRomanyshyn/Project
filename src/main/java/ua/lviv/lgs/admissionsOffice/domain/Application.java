@@ -20,7 +20,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "application")
 @Inheritance(strategy = InheritanceType.JOINED)
-public class Application {
+public class  Application {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "application_id")
