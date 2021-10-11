@@ -1,24 +1,32 @@
 package ua.lviv.lgs.admissionsOffice.domain;
 
-import java.io.Serializable;
 import java.util.Set;
 
-public class Subject implements Serializable {
-	private static final long serialVersionUID = 1L;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 
+@Entity
+@Table(name = "subject")
+public class  Subject {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "subject_id")
 	private Integer id;
+	@Column
 	private String title;
+
+	@ManyToMany(mappedBy = "examSubjects")
 	private Set<Faculty> faculties;
 
 	
 	public Subject() {	}
 
 	public Subject(String title) {		
-		this.title = title;
-	}
-
-	public Subject(Integer id, String title) {
-		this.id = id;
 		this.title = title;
 	}
 
@@ -50,6 +58,7 @@ public class Subject implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((faculties == null) ? 0 : faculties.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((title == null) ? 0 : title.hashCode());
 		return result;
@@ -64,6 +73,11 @@ public class Subject implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Subject other = (Subject) obj;
+		if (faculties == null) {
+			if (other.faculties != null)
+				return false;
+		} else if (!faculties.equals(other.faculties))
+			return false;
 		if (id == null) {
 			if (other.id != null)
 				return false;

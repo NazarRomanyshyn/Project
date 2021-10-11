@@ -1,21 +1,56 @@
 package ua.lviv.lgs.admissionsOffice.domain;
 
+import java.util.Collection;
 import java.util.Set;
 
-public class User {
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.Table;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+@Entity
+@Table(name = "user")
+@Inheritance(strategy = InheritanceType.JOINED)
+public class  User implements UserDetails {
+	private static final long serialVersionUID = 1L;
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "user_id")
 	private Integer id;
+	@Column
 	private String firstName;
+	@Column
 	private String lastName;
+	@Column
 	private String email;
+	@Column
 	private String password;
+	@Column
 	private boolean active;
+	@Column
 	private String activationCode;
-	private Set<AccessLevel> accessLevels;
-	private Applicant applicant;
 
-	public User() {
-	}
+	@ElementCollection(targetClass = AccessLevel.class, fetch = FetchType.EAGER)
+	@CollectionTable(name = "access_level", joinColumns = @JoinColumn(name = "user_id"))
+	@Enumerated(EnumType.STRING)
+	private Set<AccessLevel> accessLevels;
+
+	
+	public User() {	}
 
 	public User(String firstName, String lastName, String email, String password, boolean active,
 			Set<AccessLevel> accessLevels) {
@@ -74,7 +109,7 @@ public class User {
 	public void setActive(boolean active) {
 		this.active = active;
 	}
-
+	
 	public String getActivationCode() {
 		return activationCode;
 	}
@@ -89,14 +124,6 @@ public class User {
 
 	public void setAccessLevels(Set<AccessLevel> accessLevels) {
 		this.accessLevels = accessLevels;
-	}
-
-	public Applicant getApplicant() {
-		return applicant;
-	}
-
-	public void setApplicant(Applicant applicant) {
-		this.applicant = applicant;
 	}
 
 	@Override
@@ -161,5 +188,35 @@ public class User {
 	public String toString() {
 		return "User [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email
 				+ ", password=" + password + ", active=" + active + ", accessLevels=" + accessLevels + "]";
+	}
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return getAccessLevels();
+	}
+
+	@Override
+	public String getUsername() {
+		return email;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return isActive();
 	}
 }
