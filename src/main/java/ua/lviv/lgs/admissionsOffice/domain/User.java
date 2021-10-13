@@ -17,14 +17,17 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.Table;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 
+import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
 @Table(name = "user")
 @Inheritance(strategy = InheritanceType.JOINED)
-public class  User implements UserDetails {
+public class User implements UserDetails {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
@@ -32,12 +35,17 @@ public class  User implements UserDetails {
 	@Column(name = "user_id")
 	private Integer id;
 	@Column
+	@NotBlank(message = "Ім'я користувача не може бути порожнім!")
 	private String firstName;
 	@Column
+	@NotBlank(message = "Прізвище користувача не може бути порожнім!")
 	private String lastName;
 	@Column
+	@NotBlank(message = "Email користувача не може бути порожнім!")
+	@Email(message = "Email користувача введений некоректно!")
 	private String email;
 	@Column
+	@Length(min = 6, message = "Пароль користувача повинен бути не менше 6 символів!")
 	private String password;
 	@Column
 	private boolean active;

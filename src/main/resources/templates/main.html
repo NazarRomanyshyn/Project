@@ -1,17 +1,12 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
-	  xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+	  xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	  th:with="title='Головна сторінка'">
 
-<head>
-    <title>Приймальна комісія - головна сторінка </title>
-</head>
-
-<body>
-    <h1 th:inline="text">Привіт, [[${#httpServletRequest.remoteUser}]]!</h1>
-        <form th:action="@{/logout}" method="post">
-        	<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-            <input type="submit" value="Вийти"/>
-            <div><a href="/user">Список користувачів</a></div>
-        </form>
-    </body>
+<th:block th:replace="fragments/common::commonPage(_, ~{::main})">
+	<main>
+    	<h3 th:inline="text">Привіт, [[${#authentication.principal.firstName}]] [[${#authentication.principal.lastName}]]!</h3>
+	</main>
+</th:block>
+    
 </html>

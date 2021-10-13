@@ -24,11 +24,11 @@ public class RegistrationController {
 	@PostMapping("/registration")
 	public String registerUser(User user, Model model, RedirectAttributes redir) {
 		if (!userService.addUser(user)) {
-			model.addAttribute("message", "Такой пользователь уже существует!");
+			model.addAttribute("message", "Такий користувач вже загеєстрований!");
 			return "registration";
 		}
 		
-		redir.addFlashAttribute("message", "Для активации пользователя перейдите по ссылке в письме, отправленном на указанный Вами электронный ящик!");
+		redir.addFlashAttribute("message", "Для активації користувача перейдіть за посиланням у листі, відправленому на вказану Вами електронну скриньку!");
 		return "redirect:/login/";
 	}
 	
@@ -37,9 +37,9 @@ public class RegistrationController {
         boolean isActivated = userService.activateUser(code);
 
         if (isActivated) {
-            model.addAttribute("message", "Пользователь успешно активирован!");
+            model.addAttribute("message", "Користувач успішно активований!");
         } else {
-            model.addAttribute("message", "Код активации не найден!");
+            model.addAttribute("message", "Код активації не знайдено!");
         }
 
         return "login";
