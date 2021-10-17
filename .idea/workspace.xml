@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="0e81b314-0e8a-4a0a-98f2-571d73c62cdd" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/admissionsOffice.log" beforeDir="false" afterPath="$PROJECT_DIR$/admissionsOffice.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ua/lviv/lgs/admissionsOffice/controller/RegistrationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ua/lviv/lgs/admissionsOffice/controller/RegistrationController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ua/lviv/lgs/admissionsOffice/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ua/lviv/lgs/admissionsOffice/controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ua/lviv/lgs/admissionsOffice/dao/ApplicantRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ua/lviv/lgs/admissionsOffice/dao/ApplicantRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ua/lviv/lgs/admissionsOffice/dao/ApplicationRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ua/lviv/lgs/admissionsOffice/dao/ApplicationRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ua/lviv/lgs/admissionsOffice/dao/FacultyRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ua/lviv/lgs/admissionsOffice/dao/FacultyRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ua/lviv/lgs/admissionsOffice/dao/RatingListRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ua/lviv/lgs/admissionsOffice/dao/RatingListRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ua/lviv/lgs/admissionsOffice/dao/SpecialityRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ua/lviv/lgs/admissionsOffice/dao/SpecialityRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ua/lviv/lgs/admissionsOffice/dao/SubjectRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ua/lviv/lgs/admissionsOffice/dao/SubjectRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ua/lviv/lgs/admissionsOffice/domain/Applicant.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ua/lviv/lgs/admissionsOffice/domain/Applicant.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ua/lviv/lgs/admissionsOffice/domain/Application.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ua/lviv/lgs/admissionsOffice/domain/Application.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ua/lviv/lgs/admissionsOffice/domain/Faculty.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ua/lviv/lgs/admissionsOffice/domain/Faculty.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ua/lviv/lgs/admissionsOffice/domain/RatingList.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ua/lviv/lgs/admissionsOffice/domain/RatingList.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ua/lviv/lgs/admissionsOffice/domain/Speciality.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ua/lviv/lgs/admissionsOffice/domain/Speciality.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ua/lviv/lgs/admissionsOffice/domain/Subject.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ua/lviv/lgs/admissionsOffice/domain/Subject.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ua/lviv/lgs/admissionsOffice/domain/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ua/lviv/lgs/admissionsOffice/domain/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ua/lviv/lgs/admissionsOffice/service/MailSender.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ua/lviv/lgs/admissionsOffice/service/MailSender.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ua/lviv/lgs/admissionsOffice/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ua/lviv/lgs/admissionsOffice/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/db/migration/V1__InitializeDB.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/db/migration/V1__InitializeDB.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/fragments/navbar.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/fragments/navbar.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/main.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/main.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/profile.html" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1zdwmJ5NuNFr6VYwpUvX2hcmw16" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="0e81b314-0e8a-4a0a-98f2-571d73c62cdd" name="Changes" comment="" />
+      <created>1634491451307</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1634491451307</updated>
+    </task>
+    <servers />
+  </component>
+</project>

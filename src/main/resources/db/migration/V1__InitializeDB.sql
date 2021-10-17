@@ -25,6 +25,7 @@ create table speciality (
 	title varchar(255) not null,
 	faculty_id integer not null,
 	enrollment_plan integer not null,
+	recruitment_completed bit,
 	primary key (speciality_id)
 ) engine=MyISAM;
 
@@ -41,17 +42,14 @@ create table subject_faculty (
 ) engine=MyISAM;
 
 create table applicant (
-	user_id integer not null,
+	user_user_id integer not null,
 	birth_date date,
 	city varchar(255),
 	school varchar(255),
-	primary key (user_id)
-) engine=MyISAM;
-
-create table speciality_applicant (
-	user_id integer not null,
-	speciality_id integer not null,
-	primary key (user_id, speciality_id)
+	file_name varchar(255),
+	file_type varchar(255),
+	file_data longblob,
+	primary key (user_user_id)
 ) engine=MyISAM;
 
 create table application (
@@ -69,11 +67,21 @@ create table zno_marks (
 	primary key (application_application_id, zno_marks_key)
 ) engine=MyISAM;
 
+create table supporting_document (
+	supporting_document_id varchar(255),
+	file_name varchar(255),
+	file_type varchar(255),
+	file_data longblob,
+	application_id integer,
+	primary key (supporting_document_id)
+) engine=MyISAM;
+
 create table rating_list (
-	application_id integer not null,
+	application_application_id integer not null,
 	total_mark double precision,
 	accepted bit,
-	primary key (application_id)
+	rejection_message varchar(255),
+	primary key (application_application_id)
 ) engine=MyISAM;
 
 alter table access_level
@@ -94,19 +102,11 @@ alter table subject_faculty
 
 alter table applicant
 	add constraint applicant__user__fk
-	foreign key (user_id) references user (user_id);
+	foreign key (user_user_id) references user (user_id);
 	
-alter table speciality_applicant
-	add constraint speciality_applicant__speciality__fk
-	foreign key (speciality_id) references speciality (speciality_id);
-
-alter table speciality_applicant
-	add constraint speciality_applicant__applicant__fk
-	foreign key (user_id) references applicant (user_id);
-
 alter table application
 	add constraint application__applicant__fk
-	foreign key (applicant_id) references applicant (user_id);
+	foreign key (applicant_id) references applicant (user_user_id);
 
 alter table application
 	add constraint application__speciality__fk
@@ -120,6 +120,10 @@ alter table zno_marks
 	add constraint zno_marks__subject__fk
 	foreign key (zno_marks_key) references subject (subject_id);
 
+alter table supporting_document
+	add constraint supporting_document__application__fk
+	foreign key (application_id) references application (application_id);
+
 alter table rating_list
 	add constraint rating_list__application__fk
-	foreign key (application_id) references application (application_id);
+	foreign key (application_application_id) references application (application_id);

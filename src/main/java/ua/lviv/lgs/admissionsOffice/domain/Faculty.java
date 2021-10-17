@@ -1,5 +1,6 @@
 package ua.lviv.lgs.admissionsOffice.domain;
 
+import java.io.Serializable;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -14,15 +15,19 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "faculty")
-public class  Faculty {
+public class Faculty implements Serializable {
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "faculty_id")
 	private Integer id;
 	@Column
+	@NotBlank(message = "Назва факультету не може бути порожнім!")
 	private String title;
 	
 	@ManyToMany(cascade = CascadeType.ALL)
@@ -77,9 +82,7 @@ public class  Faculty {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((examSubjects == null) ? 0 : examSubjects.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + ((specialities == null) ? 0 : specialities.hashCode());
 		result = prime * result + ((title == null) ? 0 : title.hashCode());
 		return result;
 	}
@@ -93,20 +96,10 @@ public class  Faculty {
 		if (getClass() != obj.getClass())
 			return false;
 		Faculty other = (Faculty) obj;
-		if (examSubjects == null) {
-			if (other.examSubjects != null)
-				return false;
-		} else if (!examSubjects.equals(other.examSubjects))
-			return false;
 		if (id == null) {
 			if (other.id != null)
 				return false;
 		} else if (!id.equals(other.id))
-			return false;
-		if (specialities == null) {
-			if (other.specialities != null)
-				return false;
-		} else if (!specialities.equals(other.specialities))
 			return false;
 		if (title == null) {
 			if (other.title != null)
