@@ -1,15 +1,14 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
-	  xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+	  xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	  th:with="title='Сторінка вітання'">
 
-<head>
-    <title>Приймальна комісія </title>
-</head>
+<th:block th:replace="fragments/common::commonPage(_, ~{::main})">
+	<main>
+		<h1>Ласкаво просимо!</h1>
 
-<body>
-    <h1>Вітаємо!</h1>
-
-    <p>Нажміть <a th:href="@{/main}">сюди</a> для входу.</p>
-</body>
+		<p class="lead">Натисніть <a th:href="@{/main}">сюди</a> що б увійти.</p>
+	</main>
+</th:block>
 
 </html>

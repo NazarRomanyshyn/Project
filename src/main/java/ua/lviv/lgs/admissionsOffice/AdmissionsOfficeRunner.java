@@ -7,5 +7,5 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class AdmissionsOfficeRunner  {
 	public static void main(String[] args) {
 		SpringApplication.run(AdmissionsOfficeRunner.class, args);
-	}
+	} 
 }

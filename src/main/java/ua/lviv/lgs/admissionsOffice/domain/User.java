@@ -3,6 +3,7 @@ package ua.lviv.lgs.admissionsOffice.domain;
 import java.util.Collection;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -13,18 +14,19 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 
+import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
 @Table(name = "user")
-@Inheritance(strategy = InheritanceType.JOINED)
-public class  User implements UserDetails {
+public class User implements UserDetails {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
@@ -32,12 +34,17 @@ public class  User implements UserDetails {
 	@Column(name = "user_id")
 	private Integer id;
 	@Column
+	@NotBlank(message = "Имя пользователя не может быть пустым!")
 	private String firstName;
 	@Column
+	@NotBlank(message = "Фамилия пользователя не может быть пустым!")
 	private String lastName;
 	@Column
+	@NotBlank(message = "Email пользователя не может быть пустым!")
+	@Email(message = "Email пользователя введён некорректно!")
 	private String email;
 	@Column
+	@Length(min = 6, message = "Пароль пользователя должен быть не менее 6 символов!")
 	private String password;
 	@Column
 	private boolean active;
@@ -49,6 +56,9 @@ public class  User implements UserDetails {
 	@Enumerated(EnumType.STRING)
 	private Set<AccessLevel> accessLevels;
 
+	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Applicant applicant;
+	
 	
 	public User() {	}
 
@@ -124,6 +134,14 @@ public class  User implements UserDetails {
 
 	public void setAccessLevels(Set<AccessLevel> accessLevels) {
 		this.accessLevels = accessLevels;
+	}
+
+	public Applicant getApplicant() {
+		return applicant;
+	}
+
+	public void setApplicant(Applicant applicant) {
+		this.applicant = applicant;
 	}
 
 	@Override
