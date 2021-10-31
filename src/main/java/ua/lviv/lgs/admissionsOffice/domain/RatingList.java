@@ -14,6 +14,9 @@ import javax.persistence.Table;
 public class RatingList implements Serializable, Comparable<RatingList> {
 	private static final long serialVersionUID = 1L;
 
+	public static final double znoCoeff = 0.9;
+	public static final double attMarkCoeff = 0.1;
+
 	@Id
 	@Column
 	private Integer id;
@@ -25,10 +28,11 @@ public class RatingList implements Serializable, Comparable<RatingList> {
 	private String rejectionMessage;
 
 	@OneToOne
-    @MapsId
-    private Application application;
+	@MapsId
+	private Application application;
 
-	public RatingList() { }
+	public RatingList() {
+	}
 
 	public RatingList(Integer id, Double totalMark, boolean accepted) {
 		this.id = id;
@@ -109,7 +113,7 @@ public class RatingList implements Serializable, Comparable<RatingList> {
 			return false;
 		return true;
 	}
-	
+
 	@Override
 	public int compareTo(RatingList ratingList) {
 		if (this.totalMark > ratingList.totalMark) {
@@ -119,7 +123,7 @@ public class RatingList implements Serializable, Comparable<RatingList> {
 		}
 		return 0;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "RatingList [id=" + id + ", totalMark=" + totalMark + ", accepted=" + accepted + "]";

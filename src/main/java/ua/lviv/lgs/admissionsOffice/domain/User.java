@@ -34,17 +34,17 @@ public class User implements UserDetails {
 	@Column(name = "user_id")
 	private Integer id;
 	@Column
-	@NotBlank(message = "Имя пользователя не может быть пустым!")
+	@NotBlank(message = "Ім'я користувача не може бути порожнім!")
 	private String firstName;
 	@Column
-	@NotBlank(message = "Фамилия пользователя не может быть пустым!")
+	@NotBlank(message = "Прізвище користувача не може бути порожнім!")
 	private String lastName;
 	@Column
-	@NotBlank(message = "Email пользователя не может быть пустым!")
-	@Email(message = "Email пользователя введён некорректно!")
+	@NotBlank(message = "Email користувача не може бути порожнім!")
+	@Email(message = "Email користувача введено некоректно!")
 	private String email;
 	@Column
-	@Length(min = 6, message = "Пароль пользователя должен быть не менее 6 символов!")
+	@Length(min = 6, message = "Пароль користувача має бути не менше 6 символів!")
 	private String password;
 	@Column
 	private boolean active;

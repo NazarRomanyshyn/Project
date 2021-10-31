@@ -8,7 +8,7 @@
 		<h3>[[${title}]]</h3>
 		<a th:if="${#lists.size(applications) < 5}" class="btn btn-primary mb-3" th:href="@{'/application/create'}">Новая заявка</a>
 		<div th:if="${#lists.size(applications) >= 5}" class="alert alert-info" role="alert">
-        	Заявок можна подати не більше, ніж на 5 спеціальностей!
+        	[[#{aplication.message}]]!
     	</div>
 		<table class="table table-bordered">
 			<thead class="thead-light">
@@ -28,7 +28,7 @@
 						<div th:each="znoMark : ${aplication.znoMarks}"
 							th:text="|${znoMark.key.title}: ${znoMark.value} бал.,|">
 						</div>
-						<div th:text="|Ср. бал атестата: ${aplication.attMark} бал.|"></div>
+						<div th:text="|#{aplication.grade_point_avg}: ${aplication.attMark} #{aplication.points}|"></div>
 					</td>
 					<td th:each="status : ${applicationsStatus}" th:if="${status.key.equals(aplication.id)}" th:switch="${status.value}">
 						<span th:case="'Чекає обробки'" class="badge badge-pill badge-warning">Чекає обробки</span>
@@ -37,10 +37,10 @@
 					</td>
 					<td>
 						<span th:unless="${aplication.ratingList.accepted}">
-							<a th:href="@{'/application/edit?id=' + ${aplication.id}}">ред.</a>  |  
+							<a th:href="@{'/application/edit?id=' + ${aplication.id}}">[[#{aplication.edit}]]</a>  |  
 						</span>
 						<span th:unless="${aplication.speciality.recruitmentCompleted}">
-							<a th:href="@{'/application/delete?id=' + ${aplication.id}}">видал.</a>
+							<a th:href="@{'/application/delete?id=' + ${aplication.id}}">[[#{aplication.delete}]]</a>
 						</span>
 					</td>
 				</tr>

@@ -9,6 +9,10 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -72,9 +76,9 @@ public class ApplicationController {
             Map<String, String> errors = ControllerUtils.getErrors(bindingResult);
             model.mergeAttributes(errors);
             model.mergeAttributes(supportingDocumentErrors);
-            model.addAttribute(!znoMarksErrors.isEmpty() ? "message" : "", "При заповненні балів по ЗНО були виявлені помилки: " +
+            model.addAttribute(!znoMarksErrors.isEmpty() ? "znoMarksErrorMessage" : "", "При заповненні балів з ЗНО були виявлені помилки: " +
             		znoMarksErrors.values() + ". Спробуйте заповнити форму ще раз!");
-            model.addAttribute(form.get("speciality") == "" ? "specialityError" : "", "Поле Спеціальність не може бути порожнім!");
+            model.addAttribute(form.get("speciality").isEmpty() ? "specialityError" : "", "Поле Спеціальність не може бути порожньою!");
     		model.addAttribute("specialities", specialityService.findByRecruitmentCompletedFalse());
     		
             return "applicationCreator";
@@ -83,7 +87,7 @@ public class ApplicationController {
 		boolean applicationExists = !applicationService.createApplication(application, form, supportingDocuments);
 
 		if (applicationExists) {
-			model.addAttribute("message", "На обрану спеціальність заявка вже існує!");
+			model.addAttribute("applicationExistsMessage", "На обрану спеціальність заявка вже існує!");
 			model.addAttribute("specialities", specialityService.findByRecruitmentCompletedFalse());
 
 			return "applicationCreator";
@@ -139,8 +143,8 @@ public class ApplicationController {
 	
 	@PreAuthorize("hasAuthority('ADMIN')")
 	@GetMapping("/notAcceptedApps")
-	public String viewNotAcceptedApps(HttpSession session) {
-		List<RatingList> notAcceptedApps = ratingListService.findNotAcceptedApps();
+	public String viewNotAcceptedApps(HttpSession session, @PageableDefault(size = 5, sort = "application_id", direction = Sort.Direction.ASC) Pageable pageable) {
+		Page<RatingList> notAcceptedApps = ratingListService.findNotAcceptedApps(pageable);
 		
 		session.setAttribute("notAcceptedApps", notAcceptedApps);
 		

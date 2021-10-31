@@ -16,6 +16,8 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import ua.lviv.lgs.admissionsOffice.dao.ApplicantRepository;
@@ -55,7 +57,7 @@ public class RatingListService {
 		
 		ratingList.setId(application.getId());
 		
-		Double totalMark = calculateTotalMark(application.getZnoMarks(), application.getAttMark());
+		Double totalMark = calculateTotalMark(application.getSpeciality().getFaculty().getSubjectCoeffs(), application.getZnoMarks(), application.getAttMark());
 		ratingList.setTotalMark(totalMark);
 				
 		checkApplicationForRejectionMessage(application, form, ratingList);
@@ -97,15 +99,14 @@ public class RatingListService {
 		
 		String message = String.format(
 				"Доброго вам дня, %s %s! \n\n" +
-						"Ваша вступна заявка на спеціальність \\ \"% s \\\" прийнята адміністратором.\n" +
-						"Результати конкурсного відбору за обраною спеціальністю ви можете відстежувати в своєму особистому кабінеті.",
+						"Ваша вступна заявка на спеціальність \"%s\" прийнята адміністратором.\n" +
+						"Результати конкурсного відбору вибраної спеціальності ви можете відстежувати у своєму особистому кабінеті.",
 					application.getApplicant().getUser().getFirstName(),
 					application.getApplicant().getUser().getLastName(),
 					application.getSpeciality().getTitle()					
 				);
 
-		mailSender.send(application.getApplicant().getUser().getEmail(), "\r\n"
-				+ "Вступна заявка на спеціальність \"" + application.getSpeciality().getTitle() + "\" принята", message);        
+		mailSender.send(application.getApplicant().getUser().getEmail(), "Вступна заявка на спеціальність \"" + application.getSpeciality().getTitle() + "\" принята", message);        
 	}
 	
 	public void sendApplicationRejectionEmail(Application application, String rejectionMessage) {
@@ -113,31 +114,30 @@ public class RatingListService {
 		
 		String message = String.format(
 				"Доброго вам дня, %s %s! \n\n" +
-						"Ваша вступна заявка на спеціальність \\ \"% s \\\" відхилена адміністратором з наступних причин: \"%s\".\n" +
-						"Для участі в конкурсному відборі за обраною спеціальністю виправте, будь ласка, виявлені недоліки в заявці в своєму особистому кабінеті.",
+						"Ваша вступна заявка на спеціальність \"%s\" відхилено адміністратором з наступної причини: \"%s\".\n" +
+						"Для участі у конкурсному відборі за обраною спеціальністю виправте, будь ласка, виявлені недоліки у заявці у своєму особистому кабінеті.",
 					application.getApplicant().getUser().getFirstName(),
 					application.getApplicant().getUser().getLastName(),
 					application.getSpeciality().getTitle(),
 					rejectionMessage					
 				);
 
-		mailSender.send(application.getApplicant().getUser().getEmail(), "Вступна заявка на спеціальність \"" + application.getSpeciality().getTitle() + "\" отклонена", message);        
+		mailSender.send(application.getApplicant().getUser().getEmail(), "Вступна заявка на спеціальність \"" + application.getSpeciality().getTitle() + "\" відхилена", message);        
 	}
 
-	public Double calculateTotalMark(Map<Subject, Integer> znoMarks, Integer attMark) {
+	public Double calculateTotalMark(Map<Subject, Double> subjectCoeffs, Map<Subject, Integer> znoMarks, Integer attMark) {
 		logger.trace("Calculating application total mark...");
 		
-		Integer i = 1;
-		Double totalMark = Double.valueOf(attMark);
+		Double totalZnoMark = 0.0;
 		
-		for (Integer znoMark : znoMarks.values()) {
-			i += 1;
-			totalMark += znoMark;
+		for (Entry<Subject, Integer> entry : znoMarks.entrySet()) {
+			Double subjectCoeff = subjectCoeffs.get(entry.getKey());
+			Integer znoSubjectMark = entry.getValue();
+			Double znoMark = subjectCoeff * Double.valueOf(znoSubjectMark);
+			
+			totalZnoMark += znoMark;
 		}
-		
-		totalMark = totalMark/i;
-		
-		return totalMark;
+		return RatingList.znoCoeff * totalZnoMark + RatingList.attMarkCoeff * Double.valueOf(attMark);
 	}
 
 	public Map<Speciality, Integer> parseNumberOfApplicationsBySpeciality() {
@@ -202,10 +202,10 @@ public class RatingListService {
 				.collect(Collectors.toCollection(TreeSet::new));
 	}
 
-	public List<RatingList> findNotAcceptedApps() {
+	public Page<RatingList> findNotAcceptedApps(Pageable pageable) {
 		logger.trace("Getting all not accepted applications from database...");
 		
-		return ratingListRepository.findByAcceptedFalseAndRejectionMessageIsNull();
+		return ratingListRepository.findByAcceptedFalseAndRejectionMessageIsNull(pageable);
 	}
 
 	public void announceRecruitmentResultsBySpeciality(Speciality speciality) {
@@ -239,13 +239,14 @@ public class RatingListService {
 		
 		String message = String.format(
 				"Доброго вам дня, %s %s! \n\n" +
-						"Вітаємо! За підсумками конкурсного відбору на спеціальність \\ \"% s \\\" Ви опинилися в числі абітурієнтів, рекомедовал до зарахування.\n" +
-						"Будь ласка, протягом 10 днів подайте оригінали документів до приймальної комісії.",
+						"Вітаємо! За підсумками конкурсного відбору на спеціальність \"%s\" Ви опинилися серед абітурієнтів, рекомендованих до зарахування.\n" +
+						"Будь-ласка, протягом 10 днів подайте оригінали документів до Приймальної комісії.",
 					applicant.getUser().getFirstName(),
 					applicant.getUser().getLastName(),
 					speciality.getTitle()									
 				);
 
-		mailSender.send(applicant.getUser().getEmail(), "Набір на спеціальність \"" + speciality.getTitle() + "\" завершен", message);        
+		mailSender.send(applicant.getUser().getEmail(), "\n"
+				+ "Набір на спеціальність \"" + speciality.getTitle() + "\" завершено", message);        
 	}
 }

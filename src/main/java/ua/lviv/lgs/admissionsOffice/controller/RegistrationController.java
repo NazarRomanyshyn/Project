@@ -64,7 +64,6 @@ public class RegistrationController {
         }
         
 		if (!userService.addUser(user)) {
-			model.addAttribute("messageType", "danger");
 			model.addAttribute("message", "Такий користувач вже існує!");
 			return "registration";
 		}
@@ -78,10 +77,8 @@ public class RegistrationController {
         boolean isActivated = userService.activateUser(code);
 
         if (isActivated) {
-        	model.addAttribute("messageType", "success");
             model.addAttribute("message", "Користувач успішно активований!");
         } else {
-        	model.addAttribute("messageType", "danger");
             model.addAttribute("message", "Код активації не найден!");
         }
 

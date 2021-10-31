@@ -100,17 +100,19 @@ public class ApplicationService {
 				if (subjectIds.contains(keyId)) {
 					Subject subject = subjectRepository.findById(keyId).get();
 					if (form.get(key).isEmpty()) {
-						znoMarksErrors.put(key + "Error", "Поле бали по предмету " + subject.getTitle() + " не может быть пустым!");
+						znoMarksErrors.put(key + "Error", "\n"
+								+ "Поле бали з предмету " + subject.getTitle() + " не може бути порожнім!");
 					}
 					if (!form.get(key).isEmpty() && !form.get(key).matches("\\d+")) {
-						znoMarksErrors.put(key + "Error", "Бали по предмету " + subject.getTitle()	+ " должны быть числом!");
+						znoMarksErrors.put(key + "Error", "Бали з предмету " + subject.getTitle()	+ " повинні бути числом!");
 					}
 					if (!form.get(key).isEmpty() && form.get(key).matches("\\d+")) {
 						if (Integer.valueOf(form.get(key)) < 100) {
-							znoMarksErrors.put(key + "Error", "Бали по предмету " + subject.getTitle()	+ " не могут быть меньше 100!");
+							znoMarksErrors.put(key + "Error", "Бали з предмету " + subject.getTitle()	+ " не можуть бути менше 100!");
 						}
 						if (Integer.valueOf(form.get(key)) > 200) {
-							znoMarksErrors.put(key + "Error", "Бали по предмету " + subject.getTitle()	+ " не могут быть больше 200!");
+							znoMarksErrors.put(key + "Error", "\n"
+									+ "Бали з предмету " + subject.getTitle()	+ " не можуть бути більше 200!");
 						}
 					}
 				}
@@ -149,9 +151,9 @@ public class ApplicationService {
 		Map<Integer, String> applicationsStatus = new HashMap<>();
 		for (Application application : applicationsList) {
 			if (!application.getRatingList().isAccepted() && application.getRatingList().getRejectionMessage() == null) {
-				applicationsStatus.put(application.getId(), "Чекає обробки");
+				applicationsStatus.put(application.getId(), "Чекає на обробку");
 			} else if (!application.getRatingList().isAccepted() && application.getRatingList().getRejectionMessage() != null) {
-				applicationsStatus.put(application.getId(), "Відхилена");
+				applicationsStatus.put(application.getId(), "Відхилено");
 			} else if (application.getRatingList().isAccepted()) {
 				applicationsStatus.put(application.getId(), "Прийнята");
 			}			

@@ -1,8 +1,11 @@
 package ua.lviv.lgs.admissionsOffice.controller;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,8 +40,13 @@ public class FacultyController {
 	}
 	
 	@GetMapping("/create")
-	public String viewCreationForm(Model model) {
+	public String viewCreationForm(@RequestParam(name = "superRefererURI", required = false) String superRefererURI, HttpServletRequest request, Model model) throws URISyntaxException {
 		model.addAttribute("subjects", subjectService.findAll());
+		model.addAttribute("refererURI", new URI(request.getHeader("referer")).getPath());
+
+		if (superRefererURI != null) {
+			model.addAttribute("superRefererURI", superRefererURI);
+		}
 		
 		return "facultyCreator";
 	}
@@ -49,6 +57,11 @@ public class FacultyController {
             Map<String, String> errors = ControllerUtils.getErrors(bindingResult);
             model.mergeAttributes(errors);
             model.addAttribute("subjects", subjectService.findAll());
+            model.addAttribute("refererURI", form.get("refererURI"));
+
+    		if (form.get("superRefererURI") != "") {
+    			model.addAttribute("superRefererURI", form.get("superRefererURI"));
+    		}
             
             return "facultyCreator";
         }
@@ -56,13 +69,22 @@ public class FacultyController {
 		boolean facultyExists = !facultyService.createFaculty(faculty, form);
 		
 		if (facultyExists) {
-			model.addAttribute("message", "Такий факультет вже існує!");
+			model.addAttribute("facultyExistsMessage", "Такий факультет вже існує!");
 			model.addAttribute("subjects", subjectService.findAll());
+			model.addAttribute("refererURI", form.get("refererURI"));
+
+			if (form.get("superRefererURI") != "") {
+				model.addAttribute("superRefererURI", form.get("superRefererURI"));
+			}
 			
 			return "facultyCreator";
 		}
 		
-		return "redirect:/faculty/";
+		if (form.get("superRefererURI") != "") {			
+			return "redirect:" + form.get("superRefererURI");
+		}
+		
+		return "redirect:" + form.get("refererURI");
 	}
 	
 	@GetMapping("/edit")

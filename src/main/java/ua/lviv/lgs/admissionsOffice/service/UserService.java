@@ -91,9 +91,8 @@ public class UserService implements UserDetailsService {
 		if (!StringUtils.isEmpty(user.getEmail())) {
             String message = String.format(
             		"Доброго вам дня, %s %s! \n\n" +
-            				"\r\n"
-            				+ "Вітаємо у програмі \\ \"Приймальна комісія\".\n" +
-            				"Для продовження реєстрації та активації облікового запису перейдіть, будь ласка, за посиланням:\n" +
+            				"Ласкаво просимо до додатку \\\"Приймальна комісія\".\n" +
+            				"Для продовження реєстрації та активації свого облікового запису перейдіть, будь ласка, за посиланням:\n" +
             				"http://localhost:8080/activate/%s",
                     user.getFirstName(),
                     user.getLastName(),
