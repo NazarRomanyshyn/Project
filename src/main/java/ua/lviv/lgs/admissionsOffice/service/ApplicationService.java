@@ -38,7 +38,7 @@ public class ApplicationService {
 	
 	public List<Application> findAll() {
 		logger.trace("Getting all applications from database...");
-
+		
 		return applicationRepository.findAll();
 	}
 	
@@ -50,21 +50,29 @@ public class ApplicationService {
 	
 	public Application findByApplicantAndSpeciality(Applicant applicant, Speciality speciality) {
 		logger.trace("Getting application by specified applicant and speciality from database...");
-
+		
 		return applicationRepository.findByApplicantAndSpeciality(applicant, speciality).get();
+	}
+	
+	public boolean checkIfExists(Application application) {
+    	logger.trace("Checking if stored application already exists in database...");
+		
+		Optional<Application> applicationFromDb = applicationRepository.findByApplicantAndSpeciality(application.getApplicant(), application.getSpeciality());
+		
+		if (applicationFromDb.isPresent() && application.getId() != applicationFromDb.get().getId()) {
+			logger.warn("Application with applicant " + applicationFromDb.get().getApplicant().getUser().getFirstName()
+					+ " " + applicationFromDb.get().getApplicant().getUser().getLastName() + " and speciality \""
+					+ applicationFromDb.get().getSpeciality().getTitle() + "\" already exists in database...");
+			return true;
+		}
+		return false;
 	}
 	
 	public boolean createApplication(Application application, Map<String, String> form, MultipartFile[] supportingDocuments) throws IOException {
 		logger.trace("Adding new application to database...");
 		
-		Optional<Application> applicationFromDb = applicationRepository.findByApplicantAndSpeciality(application.getApplicant(), application.getSpeciality());
-		
-		if (applicationFromDb.isPresent()) {
-			logger.warn("Application with applicant " + applicationFromDb.get().getApplicant().getUser().getFirstName()
-					+ " " + applicationFromDb.get().getApplicant().getUser().getLastName() + " and speciality \""
-					+ applicationFromDb.get().getSpeciality().getTitle() + "\" already exists in database...");
+		if (checkIfExists(application)) 
 			return false;
-		}
 
 		Map<Subject, Integer> znoMarks = parseZnoMarks(form);
 		application.setZnoMarks(znoMarks);
@@ -83,9 +91,12 @@ public class ApplicationService {
 		return true;
 	}
 
-	public void updateApplication(Application application, Map<String, String> form, MultipartFile[] supportingDocuments) throws IOException {
+	public boolean updateApplication(Application application, Map<String, String> form, MultipartFile[] supportingDocuments) throws IOException {
 		logger.trace("Updating application in database...");
-		
+
+		if (checkIfExists(application)) 
+			return false;
+
 		Map<Subject, Integer> znoMarks = parseZnoMarks(form);
 		application.setZnoMarks(znoMarks);
 		
@@ -99,6 +110,7 @@ public class ApplicationService {
 		
 		logger.trace("Saving updated application in database...");
 		applicationRepository.save(application);
+		return true;
 	}
 	
 	public Map<String, String> getZnoMarksErrors(Map<String, String> form) {
@@ -113,8 +125,7 @@ public class ApplicationService {
 				if (subjectIds.contains(keyId)) {
 					Subject subject = subjectRepository.findById(keyId).get();
 					if (form.get(key).isEmpty()) {
-						znoMarksErrors.put(key + "Error", "\n"
-								+ "Поле бали з предмету " + subject.getTitle() + " не може бути порожнім!");
+						znoMarksErrors.put(key + "Error", "Поле бали з предмету " + subject.getTitle() + " не може бути порожнім!");
 					}
 					if (!form.get(key).isEmpty() && !form.get(key).matches("\\d+")) {
 						znoMarksErrors.put(key + "Error", "Бали з предмету " + subject.getTitle()	+ " повинні бути числом!");
@@ -124,8 +135,7 @@ public class ApplicationService {
 							znoMarksErrors.put(key + "Error", "Бали з предмету " + subject.getTitle()	+ " не можуть бути менше 100!");
 						}
 						if (Integer.valueOf(form.get(key)) > 200) {
-							znoMarksErrors.put(key + "Error", "\n"
-									+ "Бали з предмету " + subject.getTitle()	+ " не можуть бути більше 200!");
+							znoMarksErrors.put(key + "Error", "Бали з предмету " + subject.getTitle()	+ " не можуть бути більше 200!");
 						}
 					}
 				}
@@ -166,7 +176,8 @@ public class ApplicationService {
 			if (!application.getRatingList().isAccepted() && application.getRatingList().getRejectionMessage() == null) {
 				applicationsStatus.put(application.getId(), "Чекає на обробку");
 			} else if (!application.getRatingList().isAccepted() && application.getRatingList().getRejectionMessage() != null) {
-				applicationsStatus.put(application.getId(), "Відхилено");
+				applicationsStatus.put(application.getId(), "\n"
+						+ "Відхилено");
 			} else if (application.getRatingList().isAccepted()) {
 				applicationsStatus.put(application.getId(), "Прийнята");
 			}			

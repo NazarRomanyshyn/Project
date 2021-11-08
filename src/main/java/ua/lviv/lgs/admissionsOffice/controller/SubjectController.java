@@ -37,7 +37,8 @@ public class SubjectController {
 	}
 	
 	@GetMapping("/create")
-	public String viewCreationForm(@RequestParam(name = "superRefererURI", required = false) String superRefererURI, HttpServletRequest request, Model model) throws URISyntaxException {
+	public String viewCreationForm(@RequestParam(name = "superRefererURI", required = false) String superRefererURI,
+			HttpServletRequest request, Model model) throws URISyntaxException {
 		model.addAttribute("refererURI", new URI(request.getHeader("referer")).getPath());
 		
 		if (superRefererURI != null) {
@@ -64,7 +65,8 @@ public class SubjectController {
 		boolean subjectExists = !subjectService.createSubject(subject);
 		
 		if (subjectExists) {
-			model.addAttribute("subjectExistsMessage", "Такий предмет вже існує!");
+			model.addAttribute("subjectExistsMessage", "\n"
+					+ "Такий предмет вже існує!");
 			model.addAttribute("refererURI", refererURI);
 			
 			if (superRefererURI != "") {
@@ -97,14 +99,26 @@ public class SubjectController {
 			
 			return "subjectEditor";
 		}
+		
+		boolean subjectExists = !subjectService.updateSubject(updatedSubject);
+		
+		if (subjectExists) {
+			model.addAttribute("subjectExistsMessage", "\n"
+					+ "Такий предмет вже існує!");
+			model.addAttribute("subject", subject);
 
-		subjectService.saveSubject(updatedSubject);
+			return "subjectEditor";
+		}
 
 		return "redirect:/subject";
 	}
 	
 	@GetMapping("/delete")
 	public String deleteSubject(@RequestParam("id") Subject subject) {
+		if (!subject.getFaculties().isEmpty()) {
+			return "redirect:/403";
+		}
+		
 		subjectService.deleteSubject(subject);
 
 		return "redirect:/subject";

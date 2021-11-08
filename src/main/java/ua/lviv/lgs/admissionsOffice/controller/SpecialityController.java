@@ -62,7 +62,7 @@ public class SpecialityController {
 		boolean specialityExists = !specialityService.createSpeciality(speciality, form);
 		
 		if (specialityExists) {
-			model.addAttribute("message", "Така спеціальність вже існує!");
+			model.addAttribute("specialityExistsMessage", "Така спеціальність вже існує!");
 			model.addAttribute("faculties", facultyService.findAll());
 			
 			return "specialityCreator";
@@ -73,6 +73,10 @@ public class SpecialityController {
 
 	@GetMapping("/edit")
 	public String viewEditForm(@RequestParam("id") Speciality speciality, Model model) {
+		if (speciality.isRecruitmentCompleted()) {
+			return "redirect:/403";
+		}
+		
 		model.addAttribute("speciality", speciality);
 		model.addAttribute("faculties", facultyService.findAll());
 		
@@ -84,20 +88,32 @@ public class SpecialityController {
 		if (bindingResult.hasErrors() || form.get("faculty") == "") {
 			Map<String, String> errors = ControllerUtils.getErrors(bindingResult);
 			model.mergeAttributes(errors);
-			model.addAttribute(form.get("faculty") == "" ? "facultyError" : "", "Факультет специальности не может быть пустым!");
+			model.addAttribute(form.get("faculty") == "" ? "facultyError" : "", "Факультет спеціальності не може бути порожнім!");
 			model.addAttribute("speciality", speciality);
 			model.addAttribute("faculties", facultyService.findAll());
 			
 			return "specialityEditor";
 		}
 
-		specialityService.updateSpeciality(updatedSpeciality, form);
-
+		boolean specialityExists = !specialityService.updateSpeciality(updatedSpeciality, form);
+		
+		if (specialityExists) {
+			model.addAttribute("specialityExistsMessage", "Така спеціальність вже існує!");
+			model.addAttribute("speciality", speciality);
+			model.addAttribute("faculties", facultyService.findAll());
+			
+			return "specialityEditor";
+		}
+		
 		return "redirect:/speciality";
 	}
 	
-	@GetMapping("/delete")
+	@GetMapping("/delete")	
 	public String deleteSpeciality(@RequestParam("id") Speciality speciality) {
+		if (!speciality.getApplications().isEmpty()) {
+			return "redirect:/403";
+		}
+		
 		specialityService.deleteSpeciality(speciality);
 
 		return "redirect:/speciality";
@@ -105,6 +121,11 @@ public class SpecialityController {
 	
 	@GetMapping("/complete")
 	public String completeRecruitment(@RequestParam("id") Speciality speciality) {
+		Map<Speciality, Integer> submittedApps = ratingListService.parseNumberOfApplicationsBySpeciality();
+		if (submittedApps.get(speciality) == 0 || speciality.isRecruitmentCompleted()) {
+			return "redirect:/403";
+		}
+		
 		specialityService.completeRecruitment(speciality);
 
 		return "redirect:/speciality";

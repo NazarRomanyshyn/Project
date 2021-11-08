@@ -5,6 +5,7 @@ import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -62,15 +63,23 @@ public class UserService implements UserDetailsService {
     	return userRepository.findAll();
     }
 
+    public boolean checkIfExists(User user) {
+    	logger.trace("Checking if stored user already exists in database...");
+    	
+    	User userFromDb = userRepository.findByEmail(user.getEmail());
+    	
+    	if (userFromDb != null && user.getId() != userFromDb.getId()) {
+    		logger.warn("User with email \"" + userFromDb.getEmail() + "\" already exists in database...");
+    		return true;
+    	}
+    	return false;
+    }
+    
     public boolean addUser(User user) {
     	logger.trace("Adding new user to database...");
     	
-        User userFromDb = userRepository.findByEmail(user.getEmail());
-
-        if (userFromDb != null) {
-        	logger.warn("User with email \"" + userFromDb.getEmail() + "\" already exists in database...");
-            return false;
-        }
+    	if (checkIfExists(user)) 
+			return false;
 
         logger.trace("Encoding recieved user's password...");
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -91,7 +100,7 @@ public class UserService implements UserDetailsService {
 		if (!StringUtils.isEmpty(user.getEmail())) {
             String message = String.format(
             		"Доброго вам дня, %s %s! \n\n" +
-            				"Ласкаво просимо до додатку \\\"Приймальна комісія\".\n" +
+            				"Ласкаво просимо до додатку \\\"Прийомна комісія\".\n" +
             				"Для продовження реєстрації та активації свого облікового запису перейдіть, будь ласка, за посиланням:\n" +
             				"http://localhost:8080/activate/%s",
                     user.getFirstName(),
@@ -124,6 +133,18 @@ public class UserService implements UserDetailsService {
         return true;
     }
 
+    public Map<String, String> getUserErrors(Map<String, String> form) {
+    	Map<String, String> errors = new HashMap<>();
+    	if (StringUtils.isEmpty(form.get("firstName"))) {
+    		errors.put("firstNameError", "Ім'я користувача не може бути порожнім!");			
+    	}
+    	
+    	if (StringUtils.isEmpty(form.get("lastName"))) {
+    		errors.put("lastNameError", "Прізвище користувача не може бути порожнім!");
+    	}
+    	return errors;
+    }
+
     public void saveUser(User user, Map<String, String> form) {
     	logger.trace("Updating user's account...");
     	
@@ -151,7 +172,43 @@ public class UserService implements UserDetailsService {
 		userRepository.save(user);
 	}
     
-	public void updateProfile(User user, String firstName, String lastName, String email, String password,
+    public Map<String, String> getProfileErrors(User user, String firstName, String lastName, String email,
+    		String password, String confirmPassword, MultipartFile photo) {
+    	Map<String, String> errors = new HashMap<>();
+    	if (StringUtils.isEmpty(firstName)) {
+    		errors.put("firstNameError", "Ім'я користувача не може бути порожнім!");			
+    	}
+    	
+    	if (StringUtils.isEmpty(lastName)) {
+    		errors.put("lastNameError", "\n"
+    				+ "Прізвище користувача не може бути порожнім!");
+    	}
+    	
+    	if (StringUtils.isEmpty(email)) {
+    		errors.put("emailError", "Email користувача не може бути порожнім!");
+    	}
+    	
+    	if (password.length() < 6) {
+    		errors.put("passwordError", "Пароль користувача має бути не менше 6 символів!");
+    	}
+    	
+    	if (confirmPassword.length() < 6) {
+    		errors.put("confirmPasswordError", "Пароль користувача має бути не менше 6 символів!");
+    	}
+    	
+    	if (password != "" && confirmPassword != "" && !password.equals(confirmPassword)) {
+    		errors.put("confirmPasswordError", "Введені паролі не збігаються!");
+    	}
+    	
+    	if (user.getAccessLevels().contains(AccessLevel.valueOf("USER"))) {
+    		if (!photo.isEmpty() && !photo.getContentType().contains("image")) {
+    			errors.put("photoError", "Файл фотографії має бути графічним зображенням!");
+    		}
+    	}
+    	return errors;
+    }
+    
+	public boolean updateProfile(User user, String firstName, String lastName, String email, String password,
 			String birthDate, String city, String school, MultipartFile photo, String removePhotoFlag) throws IOException {
 		logger.trace("Updating user's profile...");
 		
@@ -165,6 +222,9 @@ public class UserService implements UserDetailsService {
 				|| (userEmail != null && !userEmail.equals(email));
 
 		if (isEmailChanged) {
+			if (checkIfExists(user))
+				return false;
+			
 			user.setEmail(email);
 			user.setActive(false);
 			user.setActivationCode(UUID.randomUUID().toString());
@@ -203,6 +263,7 @@ public class UserService implements UserDetailsService {
 		
 		logger.trace("Saving updated user's profile in database...");
 		userRepository.save(user);
+		return true;
 	}
 	
 	public String parseFileData(User user) throws UnsupportedEncodingException {
